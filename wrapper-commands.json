@@ -1,0 +1,19 @@
+{
+  "wrapper": {
+    "timebankMax": 2000,
+    "timePerMove": 100,
+    "maxTimeouts": 0,
+    "resultFile": "./resultfile.json",
+    "propagateBotExitCode": false,
+    "debug": true
+  },
+  "match": {
+    "bots": [{
+      "command": "java -jar /home/jim/workspace/cryptotrader-starterbot-java/build/libs/cryptotrader-starterbot-java-1.0.0.jar"
+    }],
+    "engine": {
+      "command": "java -jar /home/jim/workspace/cryptotrader-engine-java/build/libs/cryptotrader-engine-java-1.0.0.jar",
+      "configuration": {}
+    }
+  }
+}

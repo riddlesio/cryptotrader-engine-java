@@ -1,0 +1,6 @@
+initialize
+configuration {}
+bot_ids 0
+start
+details
+game
