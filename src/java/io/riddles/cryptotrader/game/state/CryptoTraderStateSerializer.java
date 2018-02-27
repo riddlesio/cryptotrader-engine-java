@@ -51,10 +51,6 @@ public class CryptoTraderStateSerializer extends AbstractStateSerializer<CryptoT
         CryptoTraderPlayerState playerState = state.getPlayerStates().get(0);
         CryptoTraderMove move = playerState.getMove();
 
-        if (!move.isInvalid() && move.getOrders().isEmpty()) {
-            return null;
-        }
-
         JSONObject stateObject = new JSONObject();
 
         stateObject.put("timestamp", state.getDate().getTime());
@@ -63,10 +59,11 @@ public class CryptoTraderStateSerializer extends AbstractStateSerializer<CryptoT
 
         if (move.isInvalid()) {
             stateObject.put("exception", move.getException().getMessage());
-            return stateObject;
         }
 
-        stateObject.put("orders", visitOrders(move));
+        if (!move.getOrders().isEmpty()) {
+            stateObject.put("orders", visitOrders(move));
+        }
 
         return stateObject;
     }

@@ -22,10 +22,16 @@ package io.riddles.cryptotrader.game;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
+import io.riddles.cryptotrader.data.Candle;
 import io.riddles.cryptotrader.data.Chart;
+import io.riddles.cryptotrader.engine.CryptoTraderEngine;
 import io.riddles.cryptotrader.game.processor.CryptoTraderProcessor;
+import io.riddles.cryptotrader.game.state.CryptoTraderPlayerState;
 import io.riddles.cryptotrader.game.state.CryptoTraderState;
 import io.riddles.cryptotrader.game.state.CryptoTraderStateSerializer;
 import io.riddles.javainterface.game.AbstractGameSerializer;
@@ -50,11 +56,7 @@ public class CryptoTraderSerializer extends AbstractGameSerializer<CryptoTraderP
         CryptoTraderState state = initialState;
         while (state.hasNextState()) {
             state = (CryptoTraderState) state.getNextState();
-
-            JSONObject stateJson = serializer.traverseToJson(state);
-            if (stateJson != null) {
-                states.put(stateJson);
-            }
+            states.put(serializer.traverseToJson(state));
         }
 
         game.put("charts", visitCharts(processor.getCharts()));
@@ -66,25 +68,46 @@ public class CryptoTraderSerializer extends AbstractGameSerializer<CryptoTraderP
     private JSONObject visitCharts(HashMap<String, Chart> charts) {
         JSONObject chartsObject = new JSONObject();
 
+        Date firstDate = getFirstDate(charts);
+        int interval = CryptoTraderEngine.configuration.getInt("candleInterval");
+
         charts.forEach((pair, chart) -> {
             JSONArray candles = new JSONArray();
+            Date date = firstDate;
+            Candle candle = chart.getChandleAt(date);
 
-            chart.getCandles().forEach((timestamp, candle) -> {
+            while (candle != null) {
                 JSONObject candleObject = new JSONObject();
-                candleObject.put("timestamp", timestamp);
+                candleObject.put("timestamp", date.getTime());
 
                 candle.getData().forEach((key, value) -> {
-                    if (!key.equals("pair")) {
-                        candleObject.put(key, value);
+                    if (key.equals("pair")) return;
+
+                    if (pair.contains("USDT")) {
+                        value = value.setScale(2, RoundingMode.HALF_UP);
                     }
+
+                    candleObject.put(key, value.doubleValue());
                 });
 
                 candles.put(candleObject);
-            });
+
+                date = new Date(date.getTime() + interval);
+                candle = chart.getChandleAt(date);
+            }
 
             chartsObject.put(pair, candles);
         });
 
         return chartsObject;
+    }
+
+    private Date getFirstDate(HashMap<String, Chart> charts) {
+        Chart chart = new ArrayList<>(charts.values()).get(0);
+
+        return chart.getCandles().values().stream()
+                .map(Candle::getDate)
+                .min(Date::compareTo)
+                .orElseThrow(() -> new RuntimeException("Can't find first candle date"));
     }
 }
