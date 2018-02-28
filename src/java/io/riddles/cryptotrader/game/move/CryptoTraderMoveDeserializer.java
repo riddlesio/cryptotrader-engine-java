@@ -68,7 +68,16 @@ public class CryptoTraderMoveDeserializer implements Deserializer<CryptoTraderMo
         ArrayList<Order> orders = new ArrayList<>();
 
         for (String orderString : split) {
-            orders.add(visitOrder(orderString.trim(), date));
+            Order order = visitOrder(orderString.trim(), date);
+            long existingPairOrders = orders.stream()
+                    .filter(o -> o.getPair().equals(order.getPair()))
+                    .count();
+
+            if (existingPairOrders > 0) {
+                throw new InvalidInputException("Can't have more than one order per pair.");
+            }
+
+            orders.add(order);
         }
 
         return new CryptoTraderMove(orders);
