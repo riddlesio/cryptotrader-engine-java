@@ -45,6 +45,7 @@ public class CryptoTraderMove extends AbstractMove {
 
     public CryptoTraderMove(InvalidInputException exception) {
         super(exception);
+        this.orders = new ArrayList<>();
     }
 
     public ArrayList<Order> getOrders() {
