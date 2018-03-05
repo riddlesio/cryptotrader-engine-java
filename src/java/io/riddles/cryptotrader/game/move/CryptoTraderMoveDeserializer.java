@@ -74,7 +74,7 @@ public class CryptoTraderMoveDeserializer implements Deserializer<CryptoTraderMo
                     .count();
 
             if (existingPairOrders > 0) {
-                throw new InvalidInputException("Can't have more than one order per pair.");
+                throw new InvalidInputException("Can't have more than one order per pair");
             }
 
             orders.add(order);

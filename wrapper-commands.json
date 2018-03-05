@@ -9,10 +9,10 @@
   },
   "match": {
     "bots": [{
-      "command": "java -jar /home/jim/workspace/cryptotrader-starterbot-java/build/libs/cryptotrader-starterbot-java-1.0.0.jar"
+      "command": "java -jar /home/jim/workspace/cryptotrader-starterbot-java/build/libs/cryptotrader-starterbot-java-1.1.0.jar"
     }],
     "engine": {
-      "command": "java -jar /home/jim/workspace/cryptotrader-engine-java/build/libs/cryptotrader-engine-java-1.0.0.jar",
+      "command": "java -jar /home/jim/workspace/cryptotrader-engine-java/build/libs/cryptotrader-engine-java-1.1.0.jar",
       "configuration": {}
     }
   }

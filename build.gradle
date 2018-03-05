@@ -5,7 +5,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 apply plugin: 'com.jfrog.artifactory'
 
-version = '1.0.0'
+version = '1.1.0'
 
 mainClassName = 'io.riddles.cryptotrader.CryptoTrader'
 sourceCompatibility = 1.8

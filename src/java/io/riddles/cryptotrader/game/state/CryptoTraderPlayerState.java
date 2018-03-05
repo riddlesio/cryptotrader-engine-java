@@ -94,6 +94,8 @@ public class CryptoTraderPlayerState extends AbstractPlayerState<CryptoTraderMov
     }
 
     public void updateStack(CryptoTraderMove move) throws InvalidMoveException {
+        double feePercent = CryptoTraderEngine.configuration.getDouble("transactionFeePercent");
+
         for (Order order : move.getOrders()) {
             String[] symbols = order.getPair().split("_");
 
@@ -116,20 +118,23 @@ public class CryptoTraderPlayerState extends AbstractPlayerState<CryptoTraderMov
             BigDecimal stack = this.stacks.get(minusSymbol).setScale(8, RoundingMode.HALF_UP);
             BigDecimal roundedAmount = minusAmount.setScale(8, RoundingMode.DOWN);
             if (stack.compareTo(roundedAmount) < 0) {
-                throw new InvalidMoveException(
-                        String.format(
-                                "%s stack (%s, %s) is too small for this order (%s, %s)",
-                                minusSymbol,
-                                this.stacks.get(minusSymbol),
-                                stack,
-                                minusAmount,
-                                roundedAmount
-                        )
-                );
+                minusAmount = stack;
+//                throw new InvalidMoveException(
+//                        String.format(
+//                                "%s stack (%s, %s) is too small for this order (%s, %s)",
+//                                minusSymbol,
+//                                this.stacks.get(minusSymbol),
+//                                stack,
+//                                minusAmount,
+//                                roundedAmount
+//                        )
+//                );
             }
 
+            BigDecimal fee = plusAmount.multiply(BigDecimal.valueOf(feePercent / 100));
+
             updateStack(minusSymbol, minusAmount.negate());
-            updateStack(plusSymbol, plusAmount);
+            updateStack(plusSymbol, plusAmount.subtract(fee));
         }
     }
 

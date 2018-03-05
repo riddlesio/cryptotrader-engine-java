@@ -50,9 +50,10 @@ class CryptoTraderMoveDeserializerSpec extends Specification {
         CryptoTraderMove move3 = moveDeserializer.traverse("wrong USDT_BTC 0.1", date)
         CryptoTraderMove move4 = moveDeserializer.traverse("buy wrong 0.1", date)
         CryptoTraderMove move5 = moveDeserializer.traverse("buy USDT_BTC wrong", date)
-        CryptoTraderMove move6 = moveDeserializer.traverse("buy USDT_BTC 0.1;sell USDT_ETH 2", date)
-        CryptoTraderMove move7 = moveDeserializer.traverse("buy USDT_BTC 0.1, sell USDT_ETH 2", date)
+        CryptoTraderMove move6 = moveDeserializer.traverse("buy USDT_BTC 0.1,sell USDT_ETH 2", date)
+        CryptoTraderMove move7 = moveDeserializer.traverse("buy USDT_BTC 0.1; sell USDT_ETH 2", date)
         CryptoTraderMove move8 = moveDeserializer.traverse("buy USDT_BTC -1", date)
+        CryptoTraderMove move9 = moveDeserializer.traverse("buy USDT_BTC 0.1;buy BTC_ETH 0.5;sell USDT_ETH 0.5;buy USDT_BTC 0.1", date)
 
         then:
         move1.isInvalid()
@@ -69,5 +70,7 @@ class CryptoTraderMoveDeserializerSpec extends Specification {
         move7.getOrders().size() == 2
         move8.isInvalid()
         move8.getException().getMessage() == "Invalid input: Amount must be greater than 0"
+        move9.isInvalid()
+        move9.getException().getMessage() == "Invalid input: Can't have more than one order per pair"
     }
 }

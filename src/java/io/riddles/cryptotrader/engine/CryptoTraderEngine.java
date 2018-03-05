@@ -74,6 +74,7 @@ public class CryptoTraderEngine extends AbstractEngine<CryptoTraderProcessor, Cr
         configuration.put("candleInterval", 1800);
         configuration.put("initialStack", 1000);
         configuration.put("givenCandles", 336); // 1 week given beforehand
+        configuration.put("transactionFeePercent", 0.2);
 
         return configuration;
     }
@@ -104,6 +105,8 @@ public class CryptoTraderEngine extends AbstractEngine<CryptoTraderProcessor, Cr
         player.sendSetting("candles_total", chart.getCandles().size());
         player.sendSetting("candles_given", configuration.getInt("givenCandles"));
         player.sendSetting("initial_stack", configuration.getInt("initialStack"));
+        player.sendSetting("transaction_fee_percent",
+                configuration.getDouble("transactionFeePercent") + "");
     }
 
     @Override
