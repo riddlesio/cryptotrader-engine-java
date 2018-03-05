@@ -118,17 +118,16 @@ public class CryptoTraderPlayerState extends AbstractPlayerState<CryptoTraderMov
             BigDecimal stack = this.stacks.get(minusSymbol).setScale(8, RoundingMode.HALF_UP);
             BigDecimal roundedAmount = minusAmount.setScale(8, RoundingMode.DOWN);
             if (stack.compareTo(roundedAmount) < 0) {
-                minusAmount = stack;
-//                throw new InvalidMoveException(
-//                        String.format(
-//                                "%s stack (%s, %s) is too small for this order (%s, %s)",
-//                                minusSymbol,
-//                                this.stacks.get(minusSymbol),
-//                                stack,
-//                                minusAmount,
-//                                roundedAmount
-//                        )
-//                );
+                throw new InvalidMoveException(
+                        String.format(
+                                "%s stack (%s, %s) is too small for this order (%s, %s)",
+                                minusSymbol,
+                                this.stacks.get(minusSymbol),
+                                stack,
+                                minusAmount,
+                                roundedAmount
+                        )
+                );
             }
 
             BigDecimal fee = plusAmount.multiply(BigDecimal.valueOf(feePercent / 100));
